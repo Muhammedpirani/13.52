@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ku" manifest="cache.appcache">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MUHAMMED PİRANİ</title>
+<style>
+  :root {
+    --bg-main: #040609;
+    --bg-brand: #090d14;
+    --bg-card: rgba(14, 20, 30, 0.85);
+    --border-col: #1e293b;
+    --text-main: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent-ok: #10b981;
+    --accent-bad: #ef4444;
+    --accent-warn: #f59e0b;
+    --accent-blue: #3b82f6;
+    --glow: rgba(59, 130, 246, 0.25);
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle at center, #0f172a 0%, var(--bg-main) 100%);
+    color: var(--text-main);
+    font: 14px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  #brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    background: var(--bg-brand);
+    border-bottom: 1px solid var(--border-col);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+
+  #brand .brand-logo-text {
+    width: 42px;
+    height: 42px;
+    margin-right: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 16px;
+    border: 2px solid var(--accent-blue);
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  #brand .brand-text-group {
+    text-align: left;
+  }
+
+  #brand .brand-title {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    color: #ffffff;
+    display: block;
+  }
+
+  #brand .brand-sub {
+    font-size: 10px;
+    color: var(--accent-blue);
+    letter-spacing: .12em;
+    font-weight: 600;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  #container {
+    max-width: 540px;
+    width: 90%;
+    margin: auto;
+    padding: 32px;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-col);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+    text-align: center;
+  }
+
+  #state {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    letter-spacing: .04em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  #det {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin: 0 0 16px;
+  }
+
+  #det b {
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  #cache {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0;
+    min-height: 22px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  #cache.cacheok { color: var(--accent-ok); background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+  .ok { color: var(--accent-ok); } 
+  .bad { color: var(--accent-bad); } 
+  .warn { color: var(--accent-warn); }
+
+  #footer {
+    text-align: center;
+    padding: 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border-col);
+    background: var(--bg-brand);
+    letter-spacing: .05em;
+  }
+</style>
+</head>
+<body>
+
+<div id="brand">
+  <div class="brand-logo-text">MP</div>
+  <div class="brand-text-group">
+    <span class="brand-title">MUHAMMED PİRANİ</span>
+    <span class="brand-sub"> version (13.02 hata 13.52)</span>
+  </div>
+</div>
+
+<div id="container">
+  <div id="state">Barkirina versiyonê...</div>
+  <div id="det"></div>
+  <br>
+    <div id="cache"></div>
+</div>
+
+<div id="footer">
+  MUHAMMED PİRANİ &bull; version (13.02 hata 13.52)
+</div>
+
+<script>
+(function () {
+    var stateEl = document.getElementById("state");
+    var detEl = document.getElementById("det");
+    var cacheEl = document.getElementById("cache");
+    function setState(t, c) { stateEl.textContent = t; stateEl.className = c || ""; }
+    function setCache(t, ok) { cacheEl.textContent = t; cacheEl.className = ok ? "cacheok" : ""; }
+    var params = new URLSearchParams(location.search);
+
+    var SUPPORTED = { 900: 1, 1100: 1, 1302: 1, 1304: 1, 1350: 1, 1352: 1 };
+
+    var key = null, fwnum = null;
+    var m = /PlayStation\s+4[\/ ](\d+)\.(\d+)/.exec(navigator.userAgent);
+    if (m) {
+        var ms = parseInt(m[2], 16).toString(16);
+        if (ms.length < 2) ms = "0" + ms;
+        key = m[1] + "." + ms;
+        fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
+    }
+
+    var forced = params.get("force") === "1";
+    var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
+    
+    detEl.innerHTML = "Versiyona amûra te: <b>" + (key || "nediyar") + "</b>"
+        + (supported ? " &middot; <b class='ok'>piştîvanî heye</b>"
+                     : " &middot; <span class='bad'>versiyon piştîvanî nîne</span>");
+
+    var target = "jb.html" + location.search;
+    function go() { setState("Barkirina jêlbirîkê...", "warn"); location.replace(target); }
+
+    function waitForTap(msg, action) {
+        setState(msg, "warn");
+        function fire() {
+            window.removeEventListener("click", fire);
+            window.removeEventListener("keydown", fire);
+            action();
+        }
+        window.addEventListener("click", fire);
+        window.addEventListener("keydown", fire);
+    }
+
+    if (!supported) {
+        setState("Versiyon piştîvanî nîne", "bad");
+        waitForTap("Versiyona (" + (key || "nediyar") + ") -- ji bo berdewamkirinê klîk bike yan bide berê", go);
+        return;
+    }
+
+    var ac = window.applicationCache;
+    if (!ac || !document.documentElement.hasAttribute("manifest")) {
+        go();
+    } else if (!navigator.onLine) {
+        setCache("Bê hêl -- ji kaşê navxweyî kar dike");
+        go();
+    } else if (ac.status === ac.IDLE) {
+        setCache("Temam bû (Cached & Ready)", true);
+        go();
+    } else if (ac.status === ac.UPDATEREADY) {
+        try { ac.swapCache(); } catch (e) {}
+        setCache("Nûvekirin hat daxistin", true);
+        waitForTap("Nûvekirina amade ye -- ji bo destpêkirinê bide berê",
+                   function () { location.reload(); });
+    } else {
+        setCache("Pشکنîna kaşê...");
+        ac.addEventListener("downloading",
+            function () { setCache("Daxistina faylên karkirina bê hêl..."); }, false);
+        ac.addEventListener("progress", function (e) {
+            if (e && e.total)
+                setCache("Rêjeya daxistinê: " + Math.round((e.loaded / e.total) * 100) + "%");
+        }, false);
+        ac.addEventListener("cached", function () {
+            setCache("Amade ye ji bo karkirina bê hêl", true);
+            waitForTap("Pashêkêxistin temam bû -- ji bo destpêkirinê bide berê", go);
+        }, false);
+        ac.addEventListener("updateready", function () {
+            try { ac.swapCache(); } catch (e) {}
+            setCache("Nûvekirin hat wergirtin", true);
+            waitForTap("Amade ye -- ji bo vekirina nû bide berê",
+                       function () { location.reload(); });
+        }, false);
+        ac.addEventListener("noupdate", function () {
+            setCache("Pashêkêxistî ye -- amade ye", true);
+            go();
+        }, false);
+        ac.addEventListener("error", function () {
+            setCache("Xeletî di kaşê de ye");
+            waitForTap("Xeletî di daxistinê de heye -- bide berê da careka dî hewl bidî", go);
+        }, false);
+        ac.addEventListener("obsolete", function () {
+            setCache("Kaş bi ser ve çûye");
+            waitForTap("Ji bo destpêkirina birêvebirinê bide berê", go);
+        }, false);
+    }
+})();
+</script>
+</body>
+</html>
