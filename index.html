@@ -145,7 +145,7 @@
   <div class="brand-logo-text">MP</div>
   <div class="brand-text-group">
     <span class="brand-title">MUHAMMED PİRANİ</span>
-    <span class="brand-sub"> version (13.02 hata 13.52)</span>
+    <span class="brand-sub"> wêşan (13.02 hata 13.52)</span>
   </div>
 </div>
 
@@ -157,7 +157,7 @@
 </div>
 
 <div id="footer">
-  MUHAMMED PİRANİ &bull; version (13.02 hata 13.52)
+  MUHAMMED PİRANİ &bull; Wêşan (13.02 hata 13.52)
 </div>
 
 <script>
@@ -183,9 +183,9 @@
     var forced = params.get("force") === "1";
     var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
     
-    detEl.innerHTML = "Versiyona amûra te: <b>" + (key || "nediyar") + "</b>"
-        + (supported ? " &middot; <b class='ok'>piştîvanî heye</b>"
-                     : " &middot; <span class='bad'>versiyon piştîvanî nîne</span>");
+    detEl.innerHTML = "Waşan çeştê ta: <b>" + (key || "na ye dyara") + "</b>"
+        + (supported ? " &middot; <b class='ok'>peştavane ya hay</b>"
+                     : " &middot; <span class='bad'>wêşan peştavani nakat</span>");
 
     var target = "jb.html" + location.search;
     function go() { setState("Barkirina jêlbirîkê...", "warn"); location.replace(target); }
@@ -202,8 +202,8 @@
     }
 
     if (!supported) {
-        setState("Versiyon piştîvanî nîne", "bad");
-        waitForTap("Versiyona (" + (key || "nediyar") + ") -- ji bo berdewamkirinê klîk bike yan bide berê", go);
+        setState("Wêşan piştîvanî nakr", "bad");
+        waitForTap("Wêşan (" + (key || "naye dyara") + ") -- ji bo bardawamkrnê click bka yan bdar kava wara va", go);
         return;
     }
 
